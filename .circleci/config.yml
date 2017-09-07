@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            dockerer build -t my-nginx .
+            docker build -t my-nginx .
       - deploy:
           name: Push Docker image into hub.docker
           command: |
