@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    working_directory: /
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build application Docker image
+          command: |
+            dockerer build -t my-nginx .
+      - deploy:
+          name: Push Docker image into hub.docker
+          command: |
+            TAG=$CIRCLE_BRANCH
+            docker build -t my-nginx:latest
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag my-nginx kkryvasov/my-nginx
+            docker push kkryvasov/my-nginx

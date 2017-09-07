@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker build -t my-nginx .
+docker build -t my-nginx:latest .
