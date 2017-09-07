@@ -11,10 +11,6 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: install docker
-          command: |
-             apk add docker && service docker start
-      - run:
           name: Build application Docker image
           command: |
             docker build -t my-nginx:latest .
