@@ -16,3 +16,9 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag my-nginx kkryvasov/my-nginx
             docker push kkryvasov/my-nginx
+          name: Setup kubectl and trigger pods recreation
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod +x kubectl
+            echo $KUBECTL_CONF > kubeconfig
+            env KUBECONFIG=kubeconfig PATH=$PATH:. kubectl apply --force -f nginx_deployment.yaml
