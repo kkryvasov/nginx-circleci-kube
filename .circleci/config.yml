@@ -9,12 +9,10 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            docker build -t my-nginx .
+            docker build -t my-nginx:latest .
       - deploy:
           name: Push Docker image into hub.docker
           command: |
-            TAG=$CIRCLE_BRANCH
-            docker build -t my-nginx:latest
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag my-nginx kkryvasov/my-nginx
             docker push kkryvasov/my-nginx
