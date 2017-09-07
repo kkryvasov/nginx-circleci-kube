@@ -18,7 +18,9 @@ jobs:
             docker push kkryvasov/my-nginx
           name: Setup kubectl and trigger pods recreation
           command: |
+            uname -a
             curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
             chmod +x kubectl
             echo $KUBECTL_CONF > kubeconfig
+            sed -ie "s/THIS_STRING_IS_REPLACED_DURING_BUILD/$(date)/g" nginx_deployment.yaml
             env KUBECONFIG=kubeconfig PATH=$PATH:. kubectl apply --force -f nginx_deployment.yaml
