@@ -9,16 +9,20 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-#      - run:
-#          name: Build application Docker image
-#          command: |
-#            docker build -t my-nginx:latest .
-#      - run:
-#          name: Push Docker image into hub.docker
-#          command: |
-#            docker login -u $DOCKER_USER -p $DOCKER_PASS
-#            docker tag my-nginx kkryvasov/my-nginx
-#            docker push kkryvasov/my-nginx
+      - run:
+          name: install docker
+          command: |
+             apk add docker && service docker start
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build -t my-nginx:latest .
+      - run:
+          name: Push Docker image into hub.docker
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag my-nginx kkryvasov/my-nginx
+            docker push kkryvasov/my-nginx
       - run:
           name: configure kubectl and trigger kube
           command: |
