@@ -3,6 +3,9 @@ jobs:
   build:
     docker:
       - image: kkryvasov/my-nginx:kubectl
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
     steps:
       - checkout
       - setup_remote_docker
