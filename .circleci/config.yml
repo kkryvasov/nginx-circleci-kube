@@ -22,7 +22,7 @@ jobs:
             docker push kkryvasov/my-nginx
   build:
     docker:
-      - image: circleci/classic:latest
+      - image: ubuntu 
     steps:
       - checkout
       - run:
