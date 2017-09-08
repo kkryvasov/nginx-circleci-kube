@@ -33,8 +33,6 @@ jobs:
       - run:
           name: configure kubectl and trigger kube
           command: |
-#decrypting the kube config file
             gpg --output=kubeconfig --passphrase=$PASSPHRASE --decrypt config.gpg 
-#substituting variable in deployment file to trigger recreation of pods which use image:latest
             sed -ie "s/THIS_STRING_IS_REPLACED_DURING_BUILD/$(date)/g" nginx_deployment.yaml
             env KUBECONFIG=kubeconfig PATH=$PATH:. kubectl apply --force -f nginx_deployment.yaml
