@@ -20,9 +20,21 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag my-nginx kkryvasov/my-nginx
             docker push kkryvasov/my-nginx
-#      - run:
-#          name: configure kubectl and trigger kube
-#          command: |
-#            echo $KUBECTL_CONF > kubeconfig
-#            sed -ie "s/THIS_STRING_IS_REPLACED_DURING_BUILD/$(date)/g" nginx_deployment.yaml
-#            env KUBECONFIG=kubeconfig PATH=$PATH:. kubectl apply --force -f nginx_deployment.yaml
+  deploy:
+    docker:
+      - image: circleci/classic:latest
+    steps:
+      - checkout
+      - run:
+          name: install kubectl
+          command: |
+             curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+             chmod +x kubectl
+      - run:
+          name: configure kubectl and trigger kube
+          command: |
+#decrypting the kube config file
+            gpg --output=kubeconfig --passphrase=$PASSPHRASE --decrypt config.gpg 
+#substituting variable in deployment file to trigger recreation of pods which use image:latest
+            sed -ie "s/THIS_STRING_IS_REPLACED_DURING_BUILD/$(date)/g" nginx_deployment.yaml
+            env KUBECONFIG=kubeconfig PATH=$PATH:. kubectl apply --force -f nginx_deployment.yaml
