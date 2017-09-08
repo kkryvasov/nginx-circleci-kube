@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  build_image:
     docker:
 #      - image: kkryvasov/my-nginx:kubectl
 #        auth:
@@ -20,7 +20,7 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag my-nginx kkryvasov/my-nginx
             docker push kkryvasov/my-nginx
-  deploy:
+  build:
     docker:
       - image: circleci/classic:latest
     steps:
@@ -36,3 +36,11 @@ jobs:
             gpg --output=kubeconfig --passphrase=$PASSPHRASE --decrypt config.gpg 
             sed -ie "s/THIS_STRING_IS_REPLACED_DURING_BUILD/$(date)/g" nginx_deployment.yaml
             env KUBECONFIG=kubeconfig PATH=$PATH:. kubectl apply --force -f nginx_deployment.yaml
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build
+      - build_image:
+          requires:
+            - build
